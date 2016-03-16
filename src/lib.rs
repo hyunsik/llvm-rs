@@ -34,9 +34,10 @@ pub use block::BasicBlock;
 pub use builder::{Builder, CastOp};
 pub use module::Module;
 pub use types::{FunctionTy, Ty};
-pub use value::{Arg, delete_func, Function, GlobalValue, Predicate, ToValue, Value, ValueIter, ValueRef};
+pub use value::{Arg, Function, GlobalValue, Predicate, ToValue, Value, ValueIter, ValueRef,
+                delete_func};
 
-use types::{LLVMTy};
+use types::LLVMTy;
 
 pub const JIT_OPT_LVEL: usize = 2;
 
@@ -367,21 +368,25 @@ mod tests {
     assert!(module1.get_func("test1").is_some());
 
     let found_func = module1.get_func("test1").expect("test1 not found");
-    assert!(unsafe { jit.get_func_ptr(&found_func).is_none()});
+    assert!(unsafe { jit.get_func_ptr(&found_func).is_none() });
 
     jit.add_module(&module1);
-    let found_fn_ptr_2 = unsafe { jit.get_func_ptr(&found_func).expect("test1 ptr not found (try 2)") };
+    let found_fn_ptr_2 = unsafe {
+      jit.get_func_ptr(&found_func).expect("test1 ptr not found (try 2)")
+    };
     assert!(found_fn_ptr_2.is_null() == false);
 
     let equal_fn: fn(u64) -> u64 = unsafe { ::std::mem::transmute(found_fn_ptr_2) };
     assert_eq!(19800401, equal_fn(19800401));
 
     jit.remove_module(&module1);
-    assert!(unsafe {jit.get_func_ptr(&found_func).is_none()});
+    assert!(unsafe { jit.get_func_ptr(&found_func).is_none() });
 
     jit.add_module(&module1);
-    let found_fn_ptr_4 = unsafe { jit.get_func_ptr(&found_func)
-      .expect("test1 ptr not found (try 4)") };
+    let found_fn_ptr_4 = unsafe {
+      jit.get_func_ptr(&found_func)
+         .expect("test1 ptr not found (try 4)")
+    };
     assert!(found_fn_ptr_4.is_null() == false);
   }
 
