@@ -70,7 +70,7 @@ extern "C" bool LLVMVerifyFunction2(LLVMValueRef Fn,
 
   if (OutMessages)
     *OutMessages = strdup(MsgsOS.str().c_str());
-    
+
   return Result;
 }
 
@@ -80,4 +80,10 @@ extern "C" uint32_t LLVMVersionMajor() {
 
 extern "C" uint32_t LLVMVersionMinor() {
   return LLVM_VERSION_MINOR;
+}
+
+extern "C" void LLVMSetDebug(int Enabled) {
+#ifndef NDEBUG
+  DebugFlag = Enabled;
+#endif
 }
